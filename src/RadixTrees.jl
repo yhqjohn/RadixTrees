@@ -143,10 +143,29 @@ function stripprefix(prefix::Tuple, s::Tuple)::Union{Tuple, Nothing}
     end
 end
 
-function subtree(r::Radix, key)
-    parent, node = _access_subtree(r, key)
-    return node
+function subtree(r::Radix{K,V}, key::Tuple{Vararg{K}}) where {K,V}
+    n = length(key)
+    i = 1
+    while i <= n
+        if haskey(r.children, key[i])
+            r = r.children[key[i]]
+            m = length(r.key)
+            if m > n-i+1
+                return nothing
+            end
+            if r.key == key[i:i+m-1]
+                i += m
+            else
+                return nothing
+            end
+        else
+            return nothing
+        end
+    end
+    return r
 end
+
+subtree(r::Radix{K,V}, key) where {K,V} = subtree(r, tuple(key...))
 
 function _access_subtree(r::Radix, key) # return the parent and the subtree node
     if ! isa(key, Tuple)
