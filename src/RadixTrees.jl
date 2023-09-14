@@ -27,8 +27,8 @@ function Base.setindex!(t::Radix{K, V}, val, key) where {K, V}
         common, rest1, rest2 = compareprefix(original_key, key)
         if rest1 == () # original key isa prefix of the new key
             if rest2 == () # the two keys are the same
-                node.is_key = true
-                node.value = value
+                original_node.value = value
+                original_node.is_key = true
                 return value
             else # the original key isa prefix of the new key
                 return original_node[rest2] = value
@@ -36,6 +36,7 @@ function Base.setindex!(t::Radix{K, V}, val, key) where {K, V}
         elseif rest2 == () # new key isa prefix of the original key
             newnode = Radix{K, V}()
             newnode.children[rest1[1]] = original_node
+            original_node.key = rest1
             newnode.is_key = true
             newnode.value = value
             newnode.key = common
@@ -44,6 +45,7 @@ function Base.setindex!(t::Radix{K, V}, val, key) where {K, V}
         else # the two keys have a common prefix
             newstem = Radix{K, V}()
             newstem.children[rest1[1]] = original_node
+            original_node.key = rest1
             newstem[rest2] = value
             newstem.key = common
             node.children[key[1]] = newstem
@@ -63,7 +65,7 @@ function Base.getindex(r::Radix, key)
     if node !== nothing && node.is_key
         return node.value
     else
-        throw(KeyError("key not found $key"))
+        throw(KeyError(key))
     end
 end
 
@@ -82,12 +84,18 @@ function Base.haskey(r::Radix, key)
 end
 
 function Base.delete!(r::Radix, key)
-    node = subtree(r, key)
-    if node !== nothing && node.is_key
+    parent, node = _access_subtree(r, key)
+    if node === nothing
+        raise(KeyError("key not found $key"))
+    end
+    if ! node.is_key
+        raise(KeyError("key not found $key"))
+    end
+    if length(node.children) > 0
         node.is_key = false
-        return node.value
+        node.value = nothing
     else
-        throw(KeyError("key not found $key"))
+        delete!(parent.children, key[1])
     end
 end
 
@@ -113,12 +121,11 @@ function stripprefix(prefix::Tuple, s::Tuple)::Union{Tuple, Nothing}
     if length(prefix) > length(s)
         return nothing
     end
-    for i in 1:length(prefix)
-        if prefix[i] != s[i]
-            return nothing
-        end
+    if prefix == s[1:length(prefix)]
+        return s[length(prefix)+1:end]
+    else
+        return nothing
     end
-    return s[length(prefix)+1:end]
 end
 
 function subtree(r::Radix, key)
@@ -142,10 +149,11 @@ function _access_subtree(r::Radix, key) # return the parent and the subtree node
             return parent, node
         end
         key = stripprefix(node.key, key)
-        if key == nothing
+        if key === nothing
             return nothing, nothing
         end
     end
+    return nothing, nothing
 end
 
 
