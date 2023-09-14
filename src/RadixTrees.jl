@@ -173,6 +173,7 @@ end
 
 include("abstractree.jl")
 include("iterate.jl")
+include("RadixSets.jl")
 
 export Radix
 

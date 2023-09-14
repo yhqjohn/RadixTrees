@@ -1,4 +1,5 @@
-using RadixTrees, Test, Plots, TreeRecipe
+using RadixTrees
+using Test, Plots, TreeRecipe
 
 r = Radix{Char, Int}()
 r["tester"] = 1
@@ -17,6 +18,7 @@ for (k, v) in r
 end
 
 println(collect(values(r)))
+println(join.(collect(keys(r))))
 
 @test r["tester"] == 12
 @test r["slow"] == 2

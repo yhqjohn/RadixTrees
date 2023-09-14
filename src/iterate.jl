@@ -66,8 +66,8 @@ function Base.iterate(r::Radix{K, V}, cursor::Optional{RadixCursor{K, V}}) where
     end
 end
 
-Base.keys(r::Radix{K, V}) where {K, V} = map(x -> x[1], iterate(r))
-Base.values(r::Radix{K, V}) where {K, V} = map(x -> x[2], iterate(r))
+Base.keys(r::Radix{K, V}) where {K, V} = map(x -> x[1], r)
+Base.values(r::Radix{K, V}) where {K, V} = map(x -> x[2], r)
 function Base.length(r::Radix{K, V}) where {K, V}
     _length = 0
     if r.is_key

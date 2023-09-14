@@ -1,4 +1,4 @@
-using RadixTrees, AbstractTrees
+using RadixTrees
 using Test, Plots, TreeRecipe
 
 r = Radix{Char, Int}()
