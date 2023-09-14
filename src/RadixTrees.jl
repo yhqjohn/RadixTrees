@@ -93,11 +93,26 @@ function Base.delete!(r::Radix, key)
     end
     if length(node.children) > 0
         node.is_key = false
-        node.value = nothing
     else
-        delete!(parent.children, key[1])
+        subkey = key[length(parent.key)+1:end]
+        delete!(parent.children, subkey[1])
     end
 end
+
+Base.isempty(r::Radix) = isempty(r.children) || !r.is_key
+
+# function Base.keys(r::Radix{K, V}) where {K, V}
+#     if length(r.children) == 0
+#         return [r.key]
+#     else
+#         _keys = if r.is_key [r.key] else K[] end
+#         prefix = r.key
+#         for child in values(r.children)
+#             child_keys = keys(child)
+
+#         end
+#     end
+# end
 
 """
     compareprefix(s1::Tuple, s2::Tuple)
@@ -156,17 +171,8 @@ function _access_subtree(r::Radix, key) # return the parent and the subtree node
     return nothing, nothing
 end
 
-
-AbstractTrees.children(t::Radix{K, V}) where {K, V} = values(t.children)
-function AbstractTrees.printnode(io::IO, t::Radix{K, V}) where {K, V}
-    value = isdefined(t, :value) ? t.value : nothing
-    key = if K == Char
-        string(t.key...)
-    else
-        t.key
-    end
-    print(io, key, ": ", isdefined(t, :value) ? t.value : nothing)
-end
+include("abstractree.jl")
+include("iterate.jl")
 
 export Radix
 

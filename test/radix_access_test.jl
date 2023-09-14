@@ -9,7 +9,14 @@ r["test"] = 5
 r["team"] = 6
 r["toast"] = 7
 r["tester"] = 12
+r["t"] = 13
 display(r)
+
+for (k, v) in r
+    println(k, " => ", v)
+end
+
+println(collect(values(r)))
 
 @test r["tester"] == 12
 @test r["slow"] == 2
@@ -20,5 +27,6 @@ display(r)
 @test r["toast"] == 7
 
 @test get(r, "tester", 0) == 12
+@test get(r, "t", 0) == 13
 @test get(r, "slow", 0) == 2
 @test get(r, "bullshit", 0) == 0
