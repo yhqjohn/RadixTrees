@@ -1,0 +1,7 @@
+name = "RadixTrees"
+uuid = "b1a870f9-84cc-4990-baba-db377eeeb6f7"
+authors = ["yhqjohn <25428156+yhqjohn@users.noreply.github.com>"]
+version = "0.1.0"
+
+[deps]
+AbstractTrees = "1520ce14-60c1-5f80-bbc7-55ef81b5835c"
