@@ -150,10 +150,7 @@ function subtree(r::Radix{K,V}, key::Tuple{Vararg{K}}) where {K,V}
         if haskey(r.children, key[i])
             r = r.children[key[i]]
             m = length(r.key)
-            if m > n-i+1
-                return nothing
-            end
-            if r.key == key[i:i+m-1]
+            if m <= n-i+1 && r.key === @inbounds key[i:i+m-1]
                 i += m
             else
                 return nothing
