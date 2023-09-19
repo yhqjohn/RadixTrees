@@ -1,5 +1,5 @@
 using RadixTrees
-using Test, Plots, TreeRecipe
+using Test
 
 r = Radix{Char, Int}()
 r["tester"] = 1
@@ -18,6 +18,4 @@ r["tester"] = 12
 display(r)
 r["t"] = 13
 display(r)
-
-plot(r)
 

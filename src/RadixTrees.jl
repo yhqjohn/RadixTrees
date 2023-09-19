@@ -162,7 +162,10 @@ function subtree(r::Radix{K,V}, key::Tuple{Vararg{K}}) where {K,V}
     return r
 end
 
-subtree(r::Radix{K,V}, key) where {K,V} = subtree(r, tuple(key...))
+function subtree(r::Radix{K,V}, key) where {K,V}
+    key = tuple(key...)
+    subtree(r, key)
+end
 
 function _access_subtree(r::Radix, key) # return the parent and the subtree node
     if ! isa(key, Tuple)

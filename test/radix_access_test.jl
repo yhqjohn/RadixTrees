@@ -1,5 +1,5 @@
 using RadixTrees
-using Test, Plots, TreeRecipe
+using Test
 
 r = Radix{Char, Int}()
 r["tester"] = 1
