@@ -1,7 +1,7 @@
-using RadixTrees.RadixSets: RadixSet
+using RadixTrees.RadixSeperations
 using Test
 
-r1 = RadixSet{Char, Int}()
+r1 = RadixSeperation{Char, Int}()
 push!(r1, "tester"=>1, "tester"=>2)
 push!(r1, "slow"=>3)
 push!(r1, "water"=>4, "slower"=>5)
@@ -12,7 +12,7 @@ push!(r1, "t"=>9)
 
 display(r1)
 
-r2 = RadixSet{Char, Int}(
+r2 = RadixSeperation{Char, Int}(
     "tester"=>1,
     "tester"=>2,
     "slow"=>3,

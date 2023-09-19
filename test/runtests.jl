@@ -15,5 +15,5 @@ end
 
 
 @safetestset "radix set creation test" begin
-    include("radix_set_creation_test.jl")
+    include("radix_seperation_creation_test.jl")
 end
