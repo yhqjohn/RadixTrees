@@ -17,3 +17,5 @@ for (k, v) in r
     @test r[k] == v
     println(k, "=>", v)
 end
+
+println(keys(r))

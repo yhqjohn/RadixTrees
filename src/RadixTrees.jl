@@ -2,7 +2,7 @@ module RadixTrees
 
 using AbstractTrees
 
-mutable struct Radix{K, V} <: AbstractNode{V}
+mutable struct Radix{K, V} <: AbstractNode{Tuple{Vararg{K}}}
     children::Dict{K, Radix{K, V}}
     is_key::Bool
     key::Tuple{Vararg{K}}
@@ -193,7 +193,7 @@ end
 include("abstractree.jl")
 include("iterate.jl")
 include("RadixSeperations.jl")
-
+include("sets.jl")
 export Radix
 
-end # module Radices
+end # module RadixTrees

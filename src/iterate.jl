@@ -59,15 +59,22 @@ function Base.iterate(r::Radix{K, V}, cursor::Optional{RadixCursor{K, V}}) where
         end
         # try to collect the current node value
         if cursor.node.is_key
-            return (cursor.prefix..., cursor.node.key...) => cursor.node.value, newcursor
+            return _item(cursor), newcursor
         else
             return iterate(r, newcursor)
         end
     end
 end
 
+_item(cursor::RadixCursor{K, V}) where {K, V} = (cursor.prefix..., cursor.node.key...) => cursor.node.value
+_item(cursor::RadixCursor{K, Nothing}) where K = (cursor.prefix..., cursor.node.key...)
+
 Base.keys(r::Radix{K, V}) where {K, V} = map(x -> x[1], r)
 Base.values(r::Radix{K, V}) where {K, V} = map(x -> x[2], r)
+Base.keys(r::Radix{K, Nothing}) where K = r
+Base.values(r::Radix{K, Nothing}) where K = r
+Base.pairs(r::Radix{K, V}) where {K, V} = r
+Base.pairs(r::Radix{K, Nothing}) where K = map(x -> x => nothing, r)
 function Base.length(r::Radix{K, V}) where {K, V}
     _length = 0
     if r.is_key
