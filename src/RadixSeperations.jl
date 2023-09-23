@@ -17,15 +17,21 @@ end
 function Base.push!(r::RadixSeperation{K, V}, ps::Vararg{Pair{S, V}}) where {K, S, V}
     for (k, v) in ps
         if !haskey(r.content, k)
-            r.content[k] = Vector{V}()
+            if k === ()
+                r.content.value = Vector{V}()
+                r.content.is_key = true
+            else
+                r.content[k] = Vector{V}()
+            end
         end
         push!(r.content[k], v)
     end
 end
+Base.push!(r::RadixSeperation{K, V}, ps::Vararg{Pair{S, V2}}) where {K, S, V, V2} = push!(r, convert.(Pair{S, V}, ps)...)
 Base.length(r::RadixSeperation{K, V}) where {K, V} = sum(length.(values(r.content)))
 Base.isempty(r::RadixSeperation{K, V}) where {K, V} = all(isempty.(values(r.content)))
 Base.values(r::RadixSeperation{K, V}) where {K, V} = vcat(values(r.content)...)
-Base.values(r::RadixSeperation{K, V}, key) where {K, V} = values(subtree(r.content, key))
+Base.values(r::RadixSeperation{K, V}, key) where {K, V} = vcat(values(subtree(r.content, key))...)
 Base.getindex(r::RadixSeperation{K, V}, key) where {K, V} = values(subtree(r.content, key)) 
 
 AbstractTrees.children(r::RadixSeperation{K, V}) where {K, V} = [RadixSeperation{K, V}(c) for c in values(r.content.children)]

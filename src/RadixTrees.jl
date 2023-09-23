@@ -143,7 +143,7 @@ function stripprefix(prefix::Tuple, s::Tuple)::Union{Tuple, Nothing}
     end
 end
 
-function subtree(r::Radix{K,V}, key::Tuple{Vararg{K}}) where {K,V}
+function _subtree(r::Radix{K,V}, key::Tuple{Vararg{K}}) where {K,V}
     n = length(key)
     i = 1
     while i <= n
@@ -161,10 +161,10 @@ function subtree(r::Radix{K,V}, key::Tuple{Vararg{K}}) where {K,V}
     end
     return r
 end
-
+subtree(r::Radix{K,V}, key::Tuple{Vararg{K}}) where {K,V} = _subtree(r, key)
 function subtree(r::Radix{K,V}, key) where {K,V}
     key = tuple(key...)
-    subtree(r, key)
+    _subtree(r, key)
 end
 
 function _access_subtree(r::Radix, key) # return the parent and the subtree node
