@@ -36,7 +36,7 @@ function Base.values(r::RadixSeperation{K, V}, key) where {K, V}
     if st === nothing
         return Vector{V}()
     else
-        return vcats(values(st)...)
+        return vcat(values(st)...)
     end
 end
 Base.getindex(r::RadixSeperation{K, V}, key) where {K, V} = values(subtree(r.content, key)) 
