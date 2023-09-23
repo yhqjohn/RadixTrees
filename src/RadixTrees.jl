@@ -101,19 +101,6 @@ end
 
 Base.isempty(r::Radix) = isempty(r.children) || !r.is_key
 
-# function Base.keys(r::Radix{K, V}) where {K, V}
-#     if length(r.children) == 0
-#         return [r.key]
-#     else
-#         _keys = if r.is_key [r.key] else K[] end
-#         prefix = r.key
-#         for child in values(r.children)
-#             child_keys = keys(child)
-
-#         end
-#     end
-# end
-
 """
     compareprefix(s1::Tuple, s2::Tuple)
 Compare the prefix of two tuples.
@@ -167,6 +154,38 @@ function subtree(r::Radix{K,V}, key) where {K,V}
     _subtree(r, key)
 end
 
+"""
+    prefixes(r::Radix{K,V}, key)
+Get the keys and values that are prefixes of the given key.
+"""
+function prefixes(r::Radix{K,V}, key) where {K,V}
+    key = tuple(key...)
+    _prefixes(r, key)
+end
+
+function _prefixes(r::Radix{K,V}, key::Tuple{Vararg{K}}) where {K,V}
+    n = length(key)
+    i = 1
+    results = Pair{Tuple{Vararg{K}}, V}[]
+    while i <= n
+        if haskey(r.children, key[i])
+            r = r.children[key[i]]
+            m = length(r.key)
+            if m <= n-i+1 && r.key === @inbounds key[i:i+m-1]
+                i += m
+                if r.is_key
+                    push!(results, r.key => r.value)
+                end
+            else
+                return results
+            end
+        else
+            return results
+        end
+    end
+    return results
+end
+
 function _access_subtree(r::Radix, key) # return the parent and the subtree node
     if ! isa(key, Tuple)
         key = tuple(key...)
@@ -194,6 +213,6 @@ include("abstractree.jl")
 include("iterate.jl")
 include("RadixSeperations.jl")
 include("sets.jl")
-export Radix
+export Radix, subtree, prefixes
 
 end # module RadixTrees
